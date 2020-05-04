@@ -1,0 +1,12 @@
+{
+  "name": "rent-estimate-auto-tester",
+  "version": "1.0.0",
+  "description": "Project that will automate testing of rent estimate of onerent.co",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "kristofer.lora",
+  "license": "MIT"
+}
