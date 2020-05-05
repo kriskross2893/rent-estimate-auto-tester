@@ -7,6 +7,7 @@ import debugLib from 'debug';
 
 import db from './model';
 import rentEstimate from './routes/rentEstimate';
+import authGuard from './authGuard';
 
 const port = process.env.PORT;
 const host = process.env.HOST;
@@ -21,6 +22,8 @@ app.use(helmet());
 app.get('/', function(req, res) {
   res.send('Hello World');
 });
+
+app.use(authGuard);
 
 app.use('/rent-estimate', rentEstimate);
 
