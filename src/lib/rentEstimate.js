@@ -49,7 +49,6 @@ export async function findAllDistinctPropertiesWhere({
         'externalKey',
         'targetRent',
         'isLeased',
-        'rank',
       ]
     });
   } catch (error) {

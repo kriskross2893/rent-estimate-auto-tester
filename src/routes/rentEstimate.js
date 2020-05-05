@@ -34,7 +34,6 @@ router.post("/", async function(req, res) {
       type: comp_property_type,
       targetRent: comp_target_rent,
       isLeased: comp_is_leased,
-      rank: comp_rank,
     } = comparable;
 
     const distance = getDistance(lat1, lng1, lat2, lng2);
@@ -47,7 +46,7 @@ router.post("/", async function(req, res) {
         comp_property_type,
         comp_target_rent,
         comp_is_leased,
-        comp_rank,
+        comp_rank: null,
         comp_mi_distance: distance,
         trends: [],
       });
