@@ -8,7 +8,7 @@ const {
 } = process.env;
 
 const authGuard = async (req, res, next) => {
-  debug('AuthGuard', req.url, req.headers);
+  debug('AuthGuard', req.url);
 
   if (req.headers && req.headers['authuser'] && req.headers['authtoken']) {
     if (
