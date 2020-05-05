@@ -12,6 +12,8 @@ export async function findAllDistinctProperties() {
         'numBeds',
         'numBaths',
         'type',
+        'externalKey',
+        'targetRent',
       ]
     });
   } catch (error) {

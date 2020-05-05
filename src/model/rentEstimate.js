@@ -57,6 +57,7 @@ const fields = (types) => ({
       const type = this.getDataValue('type');
       switch (type) {
         case 'Apartment':
+        case 'Apartment Building':
         case 'ApartmentBuilding':
         case 'Walkup Apartment':
           return 'Apartment';
