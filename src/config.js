@@ -37,6 +37,10 @@ if (process.env.NODE_ENV !== 'test') {
     ALGOLIA_APP_ID: joi.string(),
     ALGOLIA_INDEX: joi.string(),
     ALGOLIA_CLIENT_API_KEY: joi.string(),
+    AUTH_USER: joi.string()
+      .required(),
+    AUTH_TOKEN: joi.string()
+      .required(),
   }).unknown()
     .required();
 
