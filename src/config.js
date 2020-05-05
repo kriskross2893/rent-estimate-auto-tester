@@ -20,10 +20,8 @@ if (process.env.NODE_ENV !== 'test') {
     PORT: joi.number()
       .integer()
       .required(),
-    CAST_SCHEMA: joi.string()
-      .required(),
-    POSTGRES_URL: joi.string()
-      .required(),
+    CAST_SCHEMA: joi.string(),
+    POSTGRES_URL: joi.string(),
     POSTGRES_SSL: joi.boolean()
       .truthy('TRUE')
       .truthy('true')
@@ -36,12 +34,9 @@ if (process.env.NODE_ENV !== 'test') {
       .default(false),
     DEBUG: joi.string()
       .default('*'),
-    ALGOLIA_APP_ID: joi.string()
-      .required(),
-    ALGOLIA_INDEX: joi.string()
-      .required(),
-    ALGOLIA_CLIENT_API_KEY: joi.string()
-      .required(),
+    ALGOLIA_APP_ID: joi.string(),
+    ALGOLIA_INDEX: joi.string(),
+    ALGOLIA_CLIENT_API_KEY: joi.string(),
   }).unknown()
     .required();
 
