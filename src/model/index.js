@@ -19,7 +19,7 @@ const makeTestConnection = () => {
     };
     const url = urlParse(process.env.POSTGRES_TEST_URL);
     debugTest(`Connecting to ${url.pathname} on ${url.hostname} via Sequelize...`);
-    return new Sequelize(procecss.env.POSTGRES_TEST_URL, dbOptions);
+    return new Sequelize(process.env.POSTGRES_TEST_URL, dbOptions);
   } else {
     throw new Error('No test database url setup. Please setup test database url');
   }
@@ -41,7 +41,7 @@ const makeConnection = () => {
   };
   const url = urlParse(process.env.POSTGRES_URL);
   debug(`Connecting to ${url.pathname} on ${url.hostname} via Sequelize...`);
-  return new Sequelize(procecss.env.POSTGRES_URL, dbOptions);
+  return new Sequelize(process.env.POSTGRES_URL, dbOptions);
 };
 
 const readModels = (sequelize) => {
@@ -64,7 +64,7 @@ const readModels = (sequelize) => {
     Object
       .keys(models)
       .forEach(function(modelName) {
-        if (modesl[modelName].associate) {
+        if (models[modelName].associate) {
           models[modelName].associate(models);
         }
     });
@@ -83,9 +83,9 @@ db.Sequelize = Sequelize;
 db.CURRENT_TIMESTAMP = sequelize.literal('CURRENT_TIMESTAMP');
 
 db.connect = (callback) => {
-  if (['test'].includes(process.env.NODE_ENV)) {
-    return sequelize.sync().then(callback);
-  }
+  // if (['test'].includes(process.env.NODE_ENV)) {
+  //   return sequelize.sync().then(callback);
+  // }
   return callback();
 };
 

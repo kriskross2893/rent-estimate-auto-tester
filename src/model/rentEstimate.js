@@ -59,7 +59,7 @@ const fields = (types) => ({
         case 'Apartment':
         case 'ApartmentBuilding':
         case 'Walkup Apartment':
-          return Apartment;
+          return 'Apartment';
         case 'Single Family Home':
         case 'Single Family':
         case 'Two Story Home':
@@ -101,7 +101,7 @@ const fields = (types) => ({
 });
 
 const options = {
-  tableName: 'improved_comp_report',
+  tableName: 'improved_comp_report_ranked',
 };
 
 export default createModel(

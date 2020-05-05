@@ -47,10 +47,6 @@ const createModel = (modelName, fields, options) => {
 
     model.findByID = model.findById;
 
-    if (setup) {
-      setup(model, sequelize);
-    }
-
     return model;
   };
 };
