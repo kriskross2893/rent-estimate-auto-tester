@@ -119,7 +119,7 @@ export const getListingsComparables = () => ({
 });
 
 
-function getDistance(lat1, lon1, lat2, lon2) {
+export function getDistance(lat1, lon1, lat2, lon2) {
   const p = Math.PI / 180;
   const c = Math.cos;
   const a = 0.5 - c((lat2 - lat1) * p)/2 +
