@@ -98,6 +98,10 @@ const fields = (types) => ({
     type: types.STRING,
     field: 'comp_external_key',
     unique: true
+  },
+  rank: {
+    type: types.INTEGER,
+    field: 'comp_rank',
   }
 });
 
