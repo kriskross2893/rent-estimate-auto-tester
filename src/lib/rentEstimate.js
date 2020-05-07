@@ -13,6 +13,7 @@ export async function findAllDistinctProperties() {
         'type',
         'externalKey',
         'targetRent',
+        'zipCode'
       ]
     });
   } catch (error) {
@@ -33,7 +34,7 @@ export async function findAllDistinctPropertiesWhere({
     return await db.RentEstimate.findAll({
       where: {
         numBaths: {
-          [Op.between]: [numBaths - 0.5, numBaths + 0.5]
+          [Op.between]: [numBaths - 1, numBaths + 1]
         },
         numBeds,
         externalKey: {
@@ -59,3 +60,35 @@ export async function findAllDistinctPropertiesWhere({
     return [];
   }
 }
+
+export const getPropertyType = (type) => {
+  switch (type) {
+    case 'Apartment':
+    case 'Apartment Building':
+    case 'ApartmentBuilding':
+    case 'Walkup Apartment':
+      return 'Apartment';
+    case 'Single Family Home':
+    case 'Single Family':
+    case 'Two Story Home':
+    case '2 Story Home':
+    case 'Two-Storey Home':
+      return 'Single Family Home';
+    case 'Condo':
+    case 'Condominium':
+      return 'Condo';
+    case 'Townhouse':
+    case 'Townhouse/Loft':
+    case 'Townhouse/In-Law':
+      return 'Townhouse';
+    case 'Multi-Family Home':
+    case 'Fourplex':
+      return 'Multi-Family Home';
+    default:
+      return type;
+  }
+};
+
+export const sortComparables = (a, b) => {
+  return a.comp_mi_distance - b.comp_mi_distance;
+};
