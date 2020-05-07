@@ -1,6 +1,8 @@
 import express from 'express';
 
-import {rentEstimate} from '../lib';
+import {
+  rentEstimate
+} from '../lib';
 import {getDistance} from '../scripts/getListingsComparables';
 
 const router = express.Router();
@@ -14,15 +16,23 @@ router.post("/", async function(req, res) {
     latitude: lat1,
     longitude: lng1,
     propertyID,
+    propertyType,
+    zipCode,
   } = req.body;
+
+  const propertyGroup = rentEstimate.getPropertyType(propertyType);
 
   const distinctProperties = await rentEstimate
     .findAllDistinctPropertiesWhere({
       numBaths,
       numBeds,
-      propertyID
+      propertyID,
+      zipCode,
     });
-  const comparables = [];
+  const comps = [];
+  const exactMatch = [];
+  const goodMatch = [];
+  const otherProperty = [];
   distinctProperties.forEach(function(comparable){
     const {
       longitude: lng2,
@@ -34,11 +44,13 @@ router.post("/", async function(req, res) {
       type: comp_property_type,
       targetRent: comp_target_rent,
       isLeased: comp_is_leased,
+      zipCode,
     } = comparable;
+
 
     const distance = getDistance(lat1, lng1, lat2, lng2);
     if (distance < radiusLimit) {
-      comparables.push({
+      const comp = {
         comp_external_key,
         comp_name,
         comp_bedroom_number,
@@ -46,12 +58,48 @@ router.post("/", async function(req, res) {
         comp_property_type,
         comp_target_rent,
         comp_is_leased,
-        comp_rank: null,
         comp_mi_distance: distance,
+        comp_zip_code: zipCode,
         trends: [],
-      });
+      };
+      if (
+        comp_bathroom_number === numBaths
+        && propertyGroup === comp_property_type
+      ) {
+        exactMatch.push({
+          ...comp,
+          comp_rank: 1,
+        });
+      } else if (
+        comp_bathroom_number !== numBaths
+        && propertyGroup === comp_property_type
+      ) {
+        goodMatch.push({
+          ...comp,
+          comp_rank: 2,
+        });
+      } else {
+        otherProperty.push({
+          ...comp,
+          comp_rank: 3,
+        });
+      }
     }
   });
+
+  if (exactMatch.length > 0) {
+    exactMatch.sort(rentEstimate.sortComparables);
+    comps.concat(exactMatch);
+  }
+
+  if (goodMatch.length > 0) {
+    goodMatch.sort(rentEstimate.sortComparables);
+    comps.concat(goodMatch);
+  }
+
+  if (otherProperty.length > 0) {
+    otherProperty.sort(rentEstimate.sortComparables);
+  }
 
   const property = {
     property_bedroom_number: numBeds,
@@ -62,7 +110,8 @@ router.post("/", async function(req, res) {
     property_name: null,
     property_target_rent: null,
     property_type: null,
-    comps: comparables,
+    comps,
+    // set placeholders
     competitor_count: 0,
     similar_leased: 0,
     inquiry_count_total: 0
