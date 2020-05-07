@@ -24,7 +24,8 @@ export async function findAllDistinctProperties() {
 export async function findAllDistinctPropertiesWhere({
   numBeds,
   numBaths,
-  propertyID
+  propertyID,
+  zipCode
 }) {
   const sequelize = db.sequelize;
   const {Op} = db.Sequelize;
@@ -38,6 +39,7 @@ export async function findAllDistinctPropertiesWhere({
         externalKey: {
           [Op.ne]: propertyID,
         },
+        zipCode,
       },
       attributes: [
         [sequelize.fn('DISTINCT', sequelize.col('comp_name')), 'name'],
@@ -49,6 +51,7 @@ export async function findAllDistinctPropertiesWhere({
         'externalKey',
         'targetRent',
         'isLeased',
+        'zipCode',
       ]
     });
   } catch (error) {
