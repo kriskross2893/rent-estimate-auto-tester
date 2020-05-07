@@ -1,122 +1,107 @@
-// import {promises as fs} from 'fs';
-// import computeForConfidenceInterval from '../utils/computeForConfidenceInterval';
+import {promises as fs} from 'fs';
 
+import {rentEstimate} from '../lib';
+import computeForConfidenceInterval from '../utils/computeForConfidenceInterval';
+
+// uncomment after setting it up locally
 // delete require.cache[require.resolve('../../output/activeListings.json')];
 // delete require.cache[require.resolve('../../output/storedComparatables.json')];
 
 // const activeListings = require('../../output/activeListings.json');
 // const storedComparables = require('../../output/storedComparatables.json');
 
-// function getValidType(type) {
-//   switch (type) {
-//     case 'Apartment':
-//     case 'ApartmentBuilding':
-//     case 'ApartmentBuilding':
-//     case 'Walkup Apartment':
-//       return 'Apartment';
-//     case 'Single Family Home':
-//     case 'Single Family':
-//     case 'Two Story Home':
-//     case '2 Story Home':
-//     case 'Two-Storey Home':
-//       return 'Single Family Home';
-//     case 'Condo':
-//     case 'Condominium':
-//       return 'Condo';
-//     case 'Townhouse':
-//     case 'Townhouse/Loft':
-//     case 'Townhouse/In-Law':
-//       return 'Townhouse';
-//     case 'Multi-Family Home':
-//     case 'Fourplex':
-//       return 'Multi-Family Home';
-//     default:
-//       return type;
-//   }
-// }
+// comment out when above have been set up locally
+const activeListings = [];
+const storedComparables = [];
 
-// export const getListingsComparables = () => ({
-//   async run() {
-//     const validListingsWithComparables = [];
-//     activeListings.listings.forEach((listing) => {
+export const getListingsComparables = () => ({
+  async run() {
+    const validListingsWithComparables = [];
+    activeListings.listings.forEach((listing) => {
 
-//       // 3 miles
-//       const radius = 3;
-//       const centerX = listing.longitude;
-//       const centerY = listing.latitude;
-//       const listingBeds = listing.numBeds;
-//       const listingBaths = listing.numBaths;
-//       const listingType = getValidType(listing.type);
-//       const {propertyExternalKey} = listing;
+      // 3 miles
+      const radius = 3;
+      const listingType = rentEstimate.getPropertyType(listing.type);
+      const {
+        propertyExternalKey,
+        zipCode: listingZipCode,
+        longitude: centerX,
+        latitude: centerY,
+        numBaths: listingBaths,
+        numBeds: listingBeds,
+      } = listing;
 
-//       const directComparables = [];
-//       const nonDirectComparables = [];
+      const directComparables = [];
+      const nonDirectComparables = [];
 
-//       let idx = 0;
-//       while (idx < storedComparables.length) {
-//         const comparable = storedComparables[idx];
-//         const {
-//           longitude: x,
-//           latitude: y,
-//           numBeds,
-//           numBaths,
-//           type,
-//           externalKey,
-//         } = comparable;
-//         const comparableType = getValidType(type);
+      let idx = 0;
+      while (idx < storedComparables.length) {
+        const comparable = storedComparables[idx];
+        const {
+          longitude: x,
+          latitude: y,
+          numBeds,
+          numBaths,
+          type,
+          externalKey,
+          zipCode,
+        } = comparable;
+        const comparableType = rentEstimate.getPropertyType(type);
 
-//         const distance = getDistance(centerY, centerX, y, x);
-//         if (propertyExternalKey !== externalKey) {
-//           if (distance < radius) {
-//             if (comparableType === listingType) {
-//               if (
-//                 listingBeds === numBeds
-//                 && Math.abs(listingBaths - numBaths) < 1
-//               ) {
-//                 directComparables.push({
-//                   ...comparable,
-//                   distance,
-//                 });
-//               }
-//             } else {
-//               if (
-//                 listingBeds === numBeds
-//                 && Math.abs(listingBaths - numBaths) < 1
-//               ) {
-//                 nonDirectComparables.push({
-//                   ...comparable,
-//                   distance,
-//                 });
-//               }
-//             }
-//           }
-//         }
-//         idx++;
-//       }
-//       if (directComparables.length > 3) {
-//         const prices = directComparables.map(c => (
-//           c.targetRent
-//         ));
-//         const confidenceInterval = computeForConfidenceInterval(prices);
+        const distance = getDistance(centerY, centerX, y, x);
+        if (
+          propertyExternalKey !== externalKey
+          && distance < radius
+          && zipCode === listingZipCode
+        ) {
+          if (comparableType === listingType) {
+            if (
+              listingBeds === numBeds
+              && Math.abs(listingBaths - numBaths) < 1.5
+            ) {
+              directComparables.push({
+                ...comparable,
+                distance,
+              });
+            }
+          } else {
+            if (
+              listingBeds === numBeds
+              && Math.abs(listingBaths - numBaths) < 1.5
+            ) {
+              nonDirectComparables.push({
+                ...comparable,
+                distance,
+              });
+            }
+          }
+        }
+        idx++;
+      }
+      if (directComparables.length > 3) {
+        const prices = directComparables.map(c => (
+          c.targetRent
+        ));
+        const confidenceInterval = computeForConfidenceInterval(prices);
 
-//         validListingsWithComparables.push({
-//           ...listing,
-//           directComparables: directComparables.length,
-//           nonDirectComparables: nonDirectComparables.length,
-//           ...confidenceInterval,
-//         });
-//       }
-//     });
+        validListingsWithComparables.push({
+          ...listing,
+          directComparables: directComparables.length,
+          nonDirectComparables: nonDirectComparables.length,
+          ...confidenceInterval,
+        });
+      }
+    });
 
-//     await fs.writeFile(
-//       './output/listingComparables.json',
-//       JSON.stringify(validListingsWithComparables),
-//       'utf8'
-//     );
+    await fs.writeFile(
+      './output/listingComparables.json',
+      JSON.stringify(validListingsWithComparables),
+      'utf8'
+    );
 
-//     return `Success listings with comparables ${validListingsWithComparables.length}/${activeListings.listings.length}`;
-//   }
-// });
+    return `Success listings with comparables ${validListingsWithComparables.length}/${activeListings.listings.length}`;
+  }
+});
 
 
 export function getDistance(lat1, lon1, lat2, lon2) {

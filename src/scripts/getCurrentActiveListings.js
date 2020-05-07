@@ -40,6 +40,7 @@ function mapListings(listings) {
     state: listing.state,
     street: listing.street,
     unitNumber: listing.unitNumber,
+    zipCode: listing.zipCode,
   }));
 }
 
