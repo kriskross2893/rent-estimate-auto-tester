@@ -7,6 +7,7 @@ import debugLib from 'debug';
 
 import db from './model';
 import rentEstimate from './routes/rentEstimate';
+import properties from './routes/properties';
 import authGuard from './authGuard';
 
 const port = process.env.PORT;
@@ -26,6 +27,7 @@ app.get('/', function(req, res) {
 app.use(authGuard);
 
 app.use('/rent-estimate', rentEstimate);
+app.use('/properties', properties);
 
 let listener;
 export const startApp = callback => {
