@@ -1,6 +1,6 @@
 # README
 
-This project is all about generating a csv file that will showcase which properties will most likely have a rent estimate.
+This project is all about determining which listings will possible have a rent estimate with the current data in the data warehouse.
 
 ## Setup
 
@@ -8,8 +8,4 @@ This project will only be a backend system built using ExpressJS.
 
 ## How it works
 
-It will essentially pull all available listings from database and then generate a csv file from that.
-
-After generating the csv file it will hit a backend service that will retrieve all the necessary information for each listing.
-
-It will export this new output into a new csv file named - rent-estimates.csv
+It pulls data from the data warehouse and then mix and matches the data with what are the current active listings.
