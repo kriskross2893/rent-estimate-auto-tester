@@ -29,7 +29,8 @@ router.post("/", async function(req, res) {
       propertyID,
       zipCode,
     });
-  const comps = [];
+
+  let comps = [];
   const exactMatch = [];
   const goodMatch = [];
   const otherProperty = [];
@@ -46,7 +47,6 @@ router.post("/", async function(req, res) {
       isLeased: comp_is_leased,
       zipCode,
     } = comparable;
-
 
     const distance = getDistance(lat1, lng1, lat2, lng2);
     if (distance < radiusLimit) {
@@ -89,16 +89,17 @@ router.post("/", async function(req, res) {
 
   if (exactMatch.length > 0) {
     exactMatch.sort(rentEstimate.sortComparables);
-    comps.concat(exactMatch);
+    comps = comps.concat(exactMatch);
   }
 
   if (goodMatch.length > 0) {
     goodMatch.sort(rentEstimate.sortComparables);
-    comps.concat(goodMatch);
+    comps = comps.concat(goodMatch);
   }
 
   if (otherProperty.length > 0) {
     otherProperty.sort(rentEstimate.sortComparables);
+    comps = comps.concat(otherProperty);
   }
 
   const property = {

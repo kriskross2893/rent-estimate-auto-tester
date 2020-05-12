@@ -104,7 +104,7 @@ const fields = (types) => ({
     field: 'comp_rank',
   },
   zipCode: {
-    type: types.INTEGER,
+    type: types.STRING,
     field: 'comp_zip_code',
   }
 });

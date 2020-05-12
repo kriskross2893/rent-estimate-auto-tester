@@ -40,7 +40,7 @@ export async function findAllDistinctPropertiesWhere({
         externalKey: {
           [Op.ne]: propertyID,
         },
-        zipCode,
+        zipCode: `${zipCode}`
       },
       attributes: [
         [sequelize.fn('DISTINCT', sequelize.col('comp_name')), 'name'],
