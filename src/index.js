@@ -20,14 +20,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(helmet());
 
-app.get('/', function(req, res) {
+app.get('/dataops', function(req, res) {
   res.send('Hello World');
 });
 
 app.use(authGuard);
 
-app.use('/rent-estimate', rentEstimate);
-app.use('/properties', properties);
+app.use('/dataops/rent-estimate', rentEstimate);
+app.use('/dataops/properties', properties);
 
 let listener;
 export const startApp = callback => {
